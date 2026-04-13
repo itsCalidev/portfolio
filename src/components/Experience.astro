@@ -1,0 +1,153 @@
+---
+const experiences = [
+  {
+    id: 1,
+    period: '2025 — Present',
+    status: 'current',
+    role: 'Professional Practice — Full-Stack Developer',
+    org: 'Domind Desarrollo Organizacional',
+    location: 'México',
+    supervisor: 'Dr. José Luis Calderón Mafud',
+    description:
+      'Developing a web application for industrial safety and organizational climate diagnosis ("Diagnóstico de Clima y Seguridad Industrial"). Responsible for end-to-end architecture, API design, and frontend integration.',
+    tags: ['Astro', 'React', 'Tailwind CSS', 'TypeScript', 'SQL'],
+    accent: 'blue',
+  },
+  {
+    id: 2,
+    period: '2024',
+    status: 'completed',
+    role: 'Backend Leader',
+    org: 'NauticStock — Armada de México',
+    location: 'México',
+    supervisor: null,
+    description:
+      'Led the backend development of NauticStock, a naval inventory management system for the Mexican Navy. Designed the data architecture, REST API, and cloud storage integration for real-time logistics tracking.',
+    tags: ['Node.js', 'React', 'MySQL', 'Docker'],
+    accent: 'indigo',
+  },
+  {
+    id: 3,
+    period: '2024',
+    status: 'completed',
+    role: 'Co-Backend Leader',
+    org: 'iOS Mobile Application',
+    location: 'Academic Project',
+    supervisor: null,
+    description:
+      'Co-led the backend engineering for an iOS-first mobile application. Defined API contracts, managed server-side logic, and coordinated database schema design with the frontend and mobile teams.',
+    tags: ['NestJS', 'MongoDB', 'AWS S3', 'AWS SES', 'TypeScript', 'JWT'],
+    accent: 'teal',
+  },
+  {
+    id: 4,
+    period: '2023',
+    status: 'completed',
+    role: 'Backend & Database Leader',
+    org: 'Social Network Platform',
+    location: 'Academic Project',
+    supervisor: null,
+    description:
+      'Architected the complete backend and database layer for a full-featured social networking platform. Implemented real-time features, authentication flows, media uploads, and scalable data modelling.',
+    tags: ['Laravel', 'Javascript', 'MySQL'],
+    accent: 'violet',
+  },
+];
+
+const accentMap: Record<string, { text: string; border: string; bg: string; dot: string }> = {
+  blue:   { text: 'text-blue-400',   border: 'border-blue-400/25',   bg: 'bg-blue-400/8',   dot: 'bg-blue-400' },
+  indigo: { text: 'text-indigo-400', border: 'border-indigo-400/25', bg: 'bg-indigo-400/8', dot: 'bg-indigo-400' },
+  teal:   { text: 'text-teal-400',   border: 'border-teal-400/25',   bg: 'bg-teal-400/8',   dot: 'bg-teal-400' },
+  violet: { text: 'text-violet-400', border: 'border-violet-400/25', bg: 'bg-violet-400/8', dot: 'bg-violet-400' },
+};
+---
+
+<section id="experience" class="relative py-28 px-6 lg:px-12">
+  <div class="section-divider"></div>
+
+  <div class="max-w-7xl mx-auto mt-16">
+
+    <!-- ── Section header ─────────────────────────── -->
+    <div class="reveal">
+      <div class="section-label text-indigo-400">
+        <span class="glow-dot bg-indigo-400" style="color:#6366f1;"></span>
+        Experience
+      </div>
+      <h2
+        class="font-display font-bold text-white leading-tight"
+        style="font-size: clamp(2rem, 5vw, 3.5rem);"
+      >
+        Projects &amp; Roles
+      </h2>
+      <p class="mt-3 text-slate-500 max-w-lg">
+        Key engineering contributions across academic, organizational, and government contexts.
+      </p>
+    </div>
+
+    <!-- ── Timeline ───────────────────────────────── -->
+    <div class="mt-16 relative">
+
+      <!-- Vertical line -->
+      <div
+        class="absolute left-[7px] top-2 bottom-2 w-px md:left-[calc(10rem+8px)]"
+        style="background: linear-gradient(to bottom, rgba(99,102,241,0.5), rgba(99,102,241,0.1) 70%, transparent);"
+      ></div>
+
+      <div class="flex flex-col gap-12">
+        {experiences.map((exp, i) => {
+          const a = accentMap[exp.accent];
+          return (
+            <article
+              class={`reveal reveal-delay-${i + 1} relative flex flex-col md:flex-row gap-6`}
+            >
+              <!-- Timeline dot -->
+              <div class="absolute left-0 top-1.5 md:left-[calc(10rem)] flex items-center justify-center
+                           w-4 h-4 rounded-full border-2 border-[#020209] z-10"
+                   style={`background: ${exp.status === 'current' ? 'var(--clr-blue)' : 'rgba(255,255,255,0.15)'};
+                           ${exp.status === 'current' ? 'box-shadow: 0 0 0 4px rgba(59,130,246,0.2);' : ''}`}
+              ></div>
+
+              <!-- Period label -->
+              <div class="pl-8 md:pl-0 md:w-40 md:text-right shrink-0">
+                <span class="font-mono text-xs text-slate-500 tracking-wide">{exp.period}</span>
+                {exp.status === 'current' && (
+                  <span class="ml-2 md:ml-0 md:block mt-1 text-xs font-mono font-medium text-blue-400
+                                bg-blue-400/10 border border-blue-400/25 px-2 py-0.5 rounded-full
+                                inline-flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                    Live
+                  </span>
+                )}
+              </div>
+
+              <!-- Card -->
+              <div class={`glass-card flex-1 ml-8 md:ml-8 rounded-2xl p-6 border ${a.border}`}>
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h3 class={`font-display font-semibold text-lg text-white`}>{exp.role}</h3>
+                    <p class={`font-medium text-sm mt-0.5 ${a.text}`}>{exp.org}</p>
+                    <p class="text-xs text-slate-600 mt-0.5 font-mono">{exp.location}</p>
+                  </div>
+                  {exp.supervisor && (
+                    <div class="text-xs text-slate-500 border border-white/6 px-3 py-1.5 rounded-lg bg-white/2">
+                      <span class="text-slate-600">Supervised by</span><br/>
+                      <span class="text-slate-400 font-medium">{exp.supervisor}</span>
+                    </div>
+                  )}
+                </div>
+
+                <p class="mt-4 text-slate-400 text-sm leading-relaxed">{exp.description}</p>
+
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {exp.tags.map((tag) => (
+                    <span class="tech-pill">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>

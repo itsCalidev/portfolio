@@ -1,43 +1,14 @@
-# Astro Starter Kit: Minimal
 
-```sh
-npm create astro@latest -- --template minimal
-```
+# [Esteban's Portfolio](https://itscalidev.vercel.app)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+A dark-themed, single-page digital CV and developer portfolio built to showcase my experience in backend and full-stack development. Designed to be fast, minimal, and memorable — from naval inventory systems to industrial safety platforms, everything I've shipped lives here.
 
-## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+## Tech Stack
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+Built with **[Astro](https://astro.build)** and styled entirely with **[Tailwind CSS](https://tailwindcss.com)**.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## License
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+All rights reserved © Esteban Daniel Mancilla Lozoya.

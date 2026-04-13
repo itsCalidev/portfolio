@@ -1,0 +1,142 @@
+---
+---
+
+<section
+  id="hero"
+  class="relative min-h-screen flex flex-col justify-center px-6 lg:px-12 pt-32 pb-24 overflow-hidden"
+>
+
+  <!-- ── Background: dot grid ──────────────────────── -->
+  <div
+    class="absolute inset-0 pointer-events-none"
+    aria-hidden="true"
+    style="
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+    "
+  ></div>
+
+  <!-- ── Ambient glow blobs ─────────────────────────── -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div
+      class="absolute -top-32 -left-24 w-[640px] h-[640px] rounded-full
+             bg-blue-600/8 blur-[130px] animate-glow-pulse"
+    ></div>
+    <div
+      class="absolute top-1/2 -translate-y-1/2 -right-40 w-[500px] h-[500px] rounded-full
+             bg-indigo-600/6 blur-[110px]"
+      style="animation: glowPulse 4s ease-in-out infinite 1.5s;"
+    ></div>
+  </div>
+
+  <!-- ── Content ────────────────────────────────────── -->
+  <div class="relative max-w-7xl mx-auto w-full">
+
+    <!-- Eyebrow -->
+    <div class="section-label text-blue-400 mb-6 reveal">
+      <span class="glow-dot bg-blue-400" style="color: #3b82f6;"></span>
+      Available for opportunities
+    </div>
+
+    <!-- Name -->
+    <h1
+      class="font-display font-extrabold leading-none tracking-tight text-white reveal reveal-delay-1"
+      style="font-size: clamp(2.8rem, 8vw, 7rem);"
+    >
+      Esteban Daniel<br />
+      <span
+        class="text-transparent bg-clip-text"
+        style="background-image: linear-gradient(90deg, #3b82f6, #818cf8, #c084fc);"
+      >
+        Mancilla Lozoya
+      </span>
+    </h1>
+
+    <!-- Headline -->
+    <p
+      class="mt-5 font-display font-medium text-slate-300 reveal reveal-delay-2"
+      style="font-size: clamp(1rem, 2.5vw, 1.4rem);"
+    >
+      Software Engineering Student &amp; Backend Specialist
+    </p>
+
+    <!-- Description -->
+    <p
+      class="mt-4 max-w-xl text-slate-400 leading-relaxed reveal reveal-delay-3"
+      style="font-size: 1rem;"
+    >
+      2+ years of experience building high-impact academic and organizational
+      projects — from naval inventory systems to industrial safety platforms.
+      I architect scalable backends, lead technical teams, and turn complex
+      requirements into working software.
+    </p>
+
+    <!-- ── Connect buttons ─────────────────────────── -->
+    <div class="mt-10 flex flex-wrap gap-3 reveal reveal-delay-4">
+
+      <!-- LinkedIn -->
+      <a
+        href="https://linkedin.com/in/esteban-mancilla"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-connect btn-connect-blue
+               inline-flex items-center gap-2.5 px-5 py-2.5 rounded-lg
+               border border-blue-400/30 text-blue-300 font-medium text-sm"
+        aria-label="Connect on LinkedIn"
+      >
+        <!-- LinkedIn Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 shrink-0">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        LinkedIn
+      </a>
+
+      <!-- GitHub -->
+      <a
+        href="https://github.com/itsCalidev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-connect btn-connect-ghost
+               inline-flex items-center gap-2.5 px-5 py-2.5 rounded-lg
+               border border-white/12 text-slate-300 font-medium text-sm"
+        aria-label="View GitHub profile"
+      >
+        <!-- GitHub Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 shrink-0">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+        GitHub
+      </a>
+
+      <!-- Email -->
+      <a
+        href="mailto:emancillalozoya@gmail.com"
+        class="btn-connect btn-connect-teal
+               inline-flex items-center gap-2.5 px-5 py-2.5 rounded-lg
+               border border-teal-400/25 text-teal-300 font-medium text-sm"
+        aria-label="Send an email"
+      >
+        <!-- Email Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.8" stroke="currentColor" class="w-4 h-4 shrink-0">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+        </svg>
+        Email
+      </a>
+    </div>
+
+    <!-- ── Scroll indicator ────────────────────────── -->
+    <div class="mt-20 flex items-center gap-3 text-slate-600 reveal reveal-delay-5">
+      <div class="flex flex-col gap-1 items-center">
+        <div class="w-px h-8 bg-gradient-to-b from-transparent to-slate-600/60 rounded-full"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-4 h-4 animate-bounce">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/>
+        </svg>
+      </div>
+      <span class="font-mono text-xs tracking-widest">scroll to explore</span>
+    </div>
+  </div>
+</section>

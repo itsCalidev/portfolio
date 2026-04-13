@@ -1,0 +1,174 @@
+---
+const navLinks = [
+  { href: '#experience', label: 'Experience' },
+  { href: '#projects',   label: 'Projects'   },
+  { href: '#tech',       label: 'Tech Stack' },
+  { href: '#about',      label: 'About'      },
+];
+---
+
+<header
+  id="site-header"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out"
+  style="padding-top: 1.75rem; padding-bottom: 1.75rem; padding-left: 1.5rem; padding-right: 1.5rem;"
+>
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+    <!-- ── Logotype ───────────────────────────────────── -->
+    <a
+      href="#hero"
+      class="font-display font-bold text-xl tracking-tight text-white group flex items-center gap-1"
+      aria-label="Back to top"
+    >
+      <span
+        class="text-blue-400 group-hover:text-blue-300 transition-colors duration-300"
+        style="font-size: 1.35rem;"
+      >E</span><span
+        class="group-hover:text-slate-200 transition-colors duration-300"
+      >steban</span>
+      <span class="text-slate-600 ml-0.5 group-hover:text-blue-400 transition-colors duration-300"
+        >.</span>
+    </a>
+
+    <!-- ── Desktop Nav ────────────────────────────────── -->
+    <nav class="hidden md:flex items-center gap-7" aria-label="Main navigation">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-sm font-medium text-slate-400 hover:text-white transition-colors duration-200 relative group py-1"
+        >
+          {link.label}
+          <span
+            class="absolute bottom-0 left-0 h-px w-0 bg-blue-400 group-hover:w-full transition-all duration-300 ease-out"
+          ></span>
+        </a>
+      ))}
+
+      <a
+        href="mailto:emancillalozoya@gmail.com"
+        class="text-sm font-medium px-4 py-2 rounded-lg border border-white/10 text-slate-300
+               hover:border-blue-400/60 hover:text-blue-300 hover:bg-blue-400/5
+               transition-all duration-300"
+      >
+        Say Hello
+      </a>
+    </nav>
+
+    <!-- ── Mobile Toggle ──────────────────────────────── -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden text-slate-400 hover:text-white transition-colors p-2 rounded-lg
+             border border-transparent hover:border-white/10"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+    >
+      <!-- Hamburger icon -->
+      <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" fill="none"
+           viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+      </svg>
+      <!-- Close icon -->
+      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none"
+           viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor"
+           class="w-5 h-5 hidden">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ── Mobile Menu ────────────────────────────────── -->
+  <nav
+    id="mobile-nav"
+    class="md:hidden hidden mt-3 pt-4 border-t border-white/5"
+    aria-label="Mobile navigation"
+  >
+    <div class="flex flex-col gap-1 pb-2">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="mobile-nav-link px-2 py-2.5 text-sm font-medium text-slate-400 hover:text-white
+                 hover:bg-white/4 rounded-lg transition-all duration-200"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="mailto:emancillalozoya@gmail.com"
+        class="mobile-nav-link mt-2 mx-2 px-4 py-2.5 text-sm font-medium text-center rounded-lg
+               border border-white/10 text-slate-300 hover:text-blue-300 hover:border-blue-400/50
+               transition-all duration-300"
+      >
+        Say Hello
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  /* ── Header scroll shrink ───────────────────────── */
+  const header = document.getElementById('site-header') as HTMLElement;
+
+  function onScroll() {
+    const scrolled = window.scrollY > 70;
+
+    if (scrolled) {
+      header.style.paddingTop    = '0.75rem';
+      header.style.paddingBottom = '0.75rem';
+      header.classList.add(
+        'bg-[#020209]/88',
+        'backdrop-blur-2xl',
+        'border-b',
+        'border-white/5',
+        'shadow-xl',
+        'shadow-black/30'
+      );
+    } else {
+      header.style.paddingTop    = '1.75rem';
+      header.style.paddingBottom = '1.75rem';
+      header.classList.remove(
+        'bg-[#020209]/88',
+        'backdrop-blur-2xl',
+        'border-b',
+        'border-white/5',
+        'shadow-xl',
+        'shadow-black/30'
+      );
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // Run once on load
+
+  /* ── Mobile menu toggle ─────────────────────────── */
+  const btn       = document.getElementById('mobile-menu-btn') as HTMLButtonElement;
+  const mobileNav = document.getElementById('mobile-nav') as HTMLElement;
+const iconMenu  = document.querySelector<HTMLElement>('#icon-menu')!;
+const iconClose = document.querySelector<HTMLElement>('#icon-close')!;
+
+  btn.addEventListener('click', () => {
+    const isOpen = !mobileNav.classList.contains('hidden');
+
+    if (isOpen) {
+      mobileNav.classList.add('hidden');
+      iconMenu.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+    } else {
+      mobileNav.classList.remove('hidden');
+      iconMenu.classList.add('hidden');
+      iconClose.classList.remove('hidden');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  /* Close mobile menu on link click */
+  document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      mobileNav.classList.add('hidden');
+      iconMenu.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
