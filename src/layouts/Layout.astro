@@ -1,4 +1,6 @@
 ---
+import Lightbox from "../components/Lightbox.astro";
+
 interface Props {
   title: string;
   description?: string;
@@ -31,6 +33,7 @@ const {
   </head>
   <body class="bg-canvas text-slate-200 font-body antialiased overflow-x-hidden">
     <slot />
+    <Lightbox />
   </body>
 </html>
 

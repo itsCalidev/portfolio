@@ -1,0 +1,168 @@
+---
+// src/components/ProjectVisual.astro
+// ─────────────────────────────────────────────────────────────────────────────
+// Componente de cabecera visual de una ProjectCard.
+// Renderiza el modo correcto según `visual.visualType` sin condicionales
+// dispersos: toda la lógica de presentación vive aquí.
+//
+// Props de entrada:
+//   visual      → ProjectVisual  (discriminated union del tipo)
+//   projectId   → string         (id único para el lightbox; ej. slug del título)
+// ─────────────────────────────────────────────────────────────────────────────
+import type { ProjectVisual } from "../types/projects";
+import { isGalleryVisual }    from "../types/projects";
+
+export interface Props {
+  visual:    ProjectVisual;
+  projectId: string;
+}
+
+const { visual, projectId } = Astro.props;
+
+// ── Helpers para el modo galería ─────────────────────────────────────────────
+const isGallery    = isGalleryVisual(visual);
+const images       = isGallery ? visual.images       : [];
+const altRaw       = isGallery ? (visual.alt ?? "")  : "";
+const hasMultiple  = images.length > 1;
+
+/** Devuelve el alt text por índice */
+function getAlt(i: number): string {
+  if (Array.isArray(altRaw)) return altRaw[i] ?? `Captura ${i + 1}`;
+  return altRaw || `Captura ${i + 1}`;
+}
+
+// ── Diseño del contenedor ─────────────────────────────────────────────────────
+// Las mismas dimensiones del icono original: h-14 w-14 → aquí usamos h-44
+// (aspect-video) para tener superficie real de imagen.
+---
+
+{isGallery ? (
+
+  <!-- ══ MODO GALERÍA ══════════════════════════════════════════════════════ -->
+  <div
+    class="relative w-full overflow-hidden rounded-t-2xl group/gallery"
+    data-gallery-id={projectId}
+    data-images={JSON.stringify(images)}
+    data-alts={JSON.stringify(images.map((_, i) => getAlt(i)))}
+  >
+
+    <!-- Imagen de preview (siempre la primera) -->
+    <div class="aspect-video w-full overflow-hidden bg-slate-800/60">
+      <img
+        src={images[0]}
+        alt={getAlt(0)}
+        loading="lazy"
+        decoding="async"
+        width="720"
+        height="405"
+        class="
+          w-full h-full object-cover object-top
+          transition-transform duration-500 ease-out
+          group-hover/gallery:scale-105
+          cursor-pointer
+        "
+        data-open-lightbox
+        data-index="0"
+      />
+    </div>
+
+    <!-- Overlay con indicadores ─────────────────────────────────────────── -->
+    <div
+      class="
+        absolute inset-0 flex flex-col items-end justify-end p-3
+        pointer-events-none
+      "
+    >
+
+      <!-- Botón de expandir (ícono lupa) — aparece al hover -->
+      <div
+        class="
+          pointer-events-auto
+          flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
+          bg-black/60 backdrop-blur-sm border border-white/10
+          text-white text-xs font-medium
+          opacity-0 group-hover/gallery:opacity-100
+          translate-y-1 group-hover/gallery:translate-y-0
+          transition-all duration-300
+          cursor-pointer select-none
+        "
+        data-open-lightbox
+        data-index="0"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 111 11a6 6 0 0116 0z"/>
+        </svg>
+        {hasMultiple ? `Ver ${images.length} imágenes` : "Ver imagen"}
+      </div>
+
+    </div>
+
+    <!-- Thumbnail strip (solo si hay más de una imagen) ─────────────────── -->
+    {hasMultiple && (
+      <div class="absolute bottom-0 left-0 right-0 flex gap-1 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
+        {images.slice(0, 6).map((src, i) => (
+          <button
+            type="button"
+            class="
+              flex-1 aspect-video overflow-hidden rounded
+              ring-1 ring-white/10
+              hover:ring-blue-400/80 hover:scale-105
+              transition-all duration-200
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+            "
+            data-open-lightbox
+            data-index={i}
+            aria-label={`Abrir imagen ${i + 1}: ${getAlt(i)}`}
+          >
+            <img
+              src={src}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              width="120"
+              height="68"
+              class="w-full h-full object-cover object-top pointer-events-none"
+            />
+          </button>
+        ))}
+        {images.length > 6 && (
+          <div class="flex-1 aspect-video rounded ring-1 ring-white/10 bg-black/50 flex items-center justify-center text-white text-xs font-medium">
+            +{images.length - 6}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+
+) : (
+
+  <!-- ══ MODO ICONO (original, sin cambios) ════════════════════════════════ -->
+  <div class="flex items-center justify-center h-14 w-14 rounded-xl bg-slate-800/60 border border-slate-700/50 text-2xl select-none" aria-hidden="true">
+    {visual.icon}
+  </div>
+
+)}
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Delegación de eventos para abrir el lightbox global.
+// Este script se ejecuta una sola vez aunque haya múltiples ProjectVisual
+// en la página (Astro deduplica scripts idénticos en el bundle).
+// ─────────────────────────────────────────────────────────────────────────────
+document.addEventListener("click", (e) => {
+  const trigger = (e.target as Element).closest("[data-open-lightbox]");
+  if (!trigger) return;
+
+  const gallery  = trigger.closest("[data-gallery-id]") as HTMLElement | null;
+  if (!gallery) return;
+
+  const images = JSON.parse(gallery.dataset.images ?? "[]") as string[];
+  const alts   = JSON.parse(gallery.dataset.alts   ?? "[]") as string[];
+  const index  = parseInt((trigger as HTMLElement).dataset.index ?? "0", 10);
+
+  // Dispara evento global que el Lightbox escucha
+  window.dispatchEvent(new CustomEvent("cinehub:lightbox:open", {
+    detail: { images, alts, index },
+  }));
+});
+</script>

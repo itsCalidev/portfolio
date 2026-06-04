@@ -1,0 +1,349 @@
+---
+// src/components/Lightbox.astro
+// ─────────────────────────────────────────────────────────────────────────────
+// Modal/Lightbox global para la galería de proyectos.
+// Se monta UNA SOLA VEZ en el Layout; ProjectVisual lo activa via CustomEvent.
+//
+// Cierre:
+//   • Botón ✕
+//   • Tecla Escape
+//   • Clic en el fondo oscuro
+//
+// Navegación:
+//   • Flechas ← → en teclado
+//   • Botones prev/next en pantalla
+//   • Swipe táctil (touch)
+//   • Indicadores de puntos
+// ─────────────────────────────────────────────────────────────────────────────
+---
+
+<!-- El lightbox vive fuera del flujo del DOM — position:fixed -->
+<div
+  id="lb-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Galería de imágenes del proyecto"
+  class="
+    fixed inset-0 z-[9999]
+    flex items-center justify-center
+    bg-black/90 backdrop-blur-sm
+    opacity-0 pointer-events-none
+    transition-opacity duration-300
+  "
+>
+
+  <!-- Fondo clickeable para cerrar -->
+  <div id="lb-close-area" class="absolute inset-0" aria-hidden="true"></div>
+
+  <!-- Contenedor de la imagen ────────────────────────────────────────────── -->
+  <div
+    id="lb-container"
+    class="
+      relative z-10
+      flex flex-col items-center
+      w-full max-w-5xl mx-4
+    "
+  >
+
+    <!-- Barra superior: contador + botón cerrar -->
+    <div class="flex items-center justify-between w-full mb-3 px-1">
+      <span
+        id="lb-counter"
+        class="text-slate-400 text-sm font-medium tabular-nums"
+        aria-live="polite"
+      >
+        1 / 1
+      </span>
+
+      <button
+        id="lb-btn-close"
+        type="button"
+        aria-label="Cerrar galería"
+        class="
+          w-9 h-9 flex items-center justify-center rounded-xl
+          bg-slate-800 hover:bg-slate-700
+          border border-slate-600/50 hover:border-slate-500
+          text-slate-300 hover:text-white
+          transition-all duration-200
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+        "
+      >
+        <!-- ✕ SVG inline para no depender de FA en el layout -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Fila principal: flecha ← imagen flecha → -->
+    <div class="flex items-center gap-3 w-full">
+
+      <!-- Flecha anterior -->
+      <button
+        id="lb-btn-prev"
+        type="button"
+        aria-label="Imagen anterior"
+        class="
+          flex-shrink-0
+          w-11 h-11 flex items-center justify-center rounded-xl
+          bg-slate-800/80 hover:bg-blue-600
+          border border-slate-600/40 hover:border-blue-500
+          text-slate-300 hover:text-white
+          backdrop-blur-sm
+          transition-all duration-200
+          disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-slate-800/80 disabled:hover:border-slate-600/40
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+        "
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <!-- Imagen principal -->
+      <div
+        id="lb-img-wrapper"
+        class="
+          flex-1 overflow-hidden rounded-2xl
+          bg-slate-900 border border-slate-700/50
+          flex items-center justify-center
+          min-h-[200px]
+          shadow-2xl shadow-black/60
+        "
+      >
+        <!-- Skeleton loader mientras carga -->
+        <div
+          id="lb-skeleton"
+          class="w-full aspect-video bg-slate-800 animate-pulse rounded-2xl"
+          aria-hidden="true"
+        />
+        <img
+          id="lb-img"
+          src=""
+          alt=""
+          class="
+            w-full h-auto max-h-[75vh] object-contain
+            rounded-2xl opacity-0
+            transition-opacity duration-300
+          "
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      <!-- Flecha siguiente -->
+      <button
+        id="lb-btn-next"
+        type="button"
+        aria-label="Siguiente imagen"
+        class="
+          flex-shrink-0
+          w-11 h-11 flex items-center justify-center rounded-xl
+          bg-slate-800/80 hover:bg-blue-600
+          border border-slate-600/40 hover:border-blue-500
+          text-slate-300 hover:text-white
+          backdrop-blur-sm
+          transition-all duration-200
+          disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-slate-800/80 disabled:hover:border-slate-600/40
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+        "
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Alt text de la imagen actual -->
+    <p
+      id="lb-alt"
+      class="mt-3 text-slate-400 text-sm text-center line-clamp-1 px-14"
+      aria-live="polite"
+    ></p>
+
+    <!-- Indicadores de puntos (dots) -->
+    <div
+      id="lb-dots"
+      class="flex items-center justify-center gap-2 mt-4"
+      role="tablist"
+      aria-label="Miniaturas de imágenes"
+    ></div>
+
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Lightbox — lógica de cliente completa
+// ─────────────────────────────────────────────────────────────────────────────
+
+const backdrop  = document.getElementById("lb-backdrop")  as HTMLElement;
+const closeArea = document.getElementById("lb-close-area") as HTMLElement;
+const btnClose  = document.getElementById("lb-btn-close") as HTMLButtonElement;
+const btnPrev   = document.getElementById("lb-btn-prev")  as HTMLButtonElement;
+const btnNext   = document.getElementById("lb-btn-next")  as HTMLButtonElement;
+const img       = document.getElementById("lb-img")       as HTMLImageElement;
+const skeleton  = document.getElementById("lb-skeleton")  as HTMLElement;
+const counter   = document.getElementById("lb-counter")   as HTMLElement;
+const altText   = document.getElementById("lb-alt")       as HTMLElement;
+const dotsWrap  = document.getElementById("lb-dots")      as HTMLElement;
+
+let images:  string[] = [];
+let alts:    string[] = [];
+let current: number   = 0;
+
+// ── Abrir ─────────────────────────────────────────────────────────────────
+window.addEventListener("cinehub:lightbox:open", (e: Event) => {
+  const { images: imgs, alts: a, index } = (e as CustomEvent).detail as {
+    images: string[];
+    alts:   string[];
+    index:  number;
+  };
+
+  images  = imgs;
+  alts    = a;
+  current = index;
+
+  buildDots();
+  goTo(current, false);
+  open();
+});
+
+function open() {
+  backdrop.classList.remove("opacity-0", "pointer-events-none");
+  document.body.style.overflow = "hidden";
+  btnClose.focus();
+}
+
+// ── Cerrar ────────────────────────────────────────────────────────────────
+function close() {
+  backdrop.classList.add("opacity-0", "pointer-events-none");
+  document.body.style.overflow = "";
+  // Libera src para que el GC pueda actuar
+  setTimeout(() => { img.src = ""; img.alt = ""; }, 300);
+}
+
+btnClose.addEventListener("click", close);
+closeArea.addEventListener("click", close);
+
+// ── Navegar ───────────────────────────────────────────────────────────────
+function goTo(index: number, animate = true) {
+  current = (index + images.length) % images.length;
+
+  // Skeleton mientras carga
+  img.classList.add("opacity-0");
+  skeleton.classList.remove("hidden");
+
+  const newSrc = images[current];
+  const newAlt = alts[current] ?? `Imagen ${current + 1}`;
+
+  // Preload manual para detectar fin de carga
+  const loader = new Image();
+  loader.onload = () => {
+    img.src = newSrc;
+    img.alt = newAlt;
+    img.classList.remove("opacity-0");
+    skeleton.classList.add("hidden");
+  };
+  loader.onerror = () => {
+    // Si la imagen falla, mostrar igualmente sin skeleton
+    img.src = newSrc;
+    img.alt = newAlt;
+    img.classList.remove("opacity-0");
+    skeleton.classList.add("hidden");
+  };
+  loader.src = newSrc;
+
+  // UI sincrónica
+  counter.textContent = `${current + 1} / ${images.length}`;
+  altText.textContent  = newAlt;
+
+  updateButtons();
+  updateDots();
+}
+
+btnPrev.addEventListener("click", () => goTo(current - 1));
+btnNext.addEventListener("click", () => goTo(current + 1));
+
+function updateButtons() {
+  // Ocultamos las flechas si solo hay una imagen
+  const single = images.length <= 1;
+  btnPrev.style.visibility = single ? "hidden" : "visible";
+  btnNext.style.visibility = single ? "hidden" : "visible";
+}
+
+// ── Dots ──────────────────────────────────────────────────────────────────
+function buildDots() {
+  dotsWrap.innerHTML = "";
+
+  if (images.length <= 1) return;
+
+  images.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.setAttribute("role", "tab");
+    dot.setAttribute("aria-label", `Ir a imagen ${i + 1}`);
+    dot.className = [
+      "rounded-full border-0 p-0 cursor-pointer",
+      "transition-all duration-300",
+      "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400",
+    ].join(" ");
+    dot.addEventListener("click", () => goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  updateDots();
+}
+
+function updateDots() {
+  const dots = dotsWrap.querySelectorAll("button");
+  dots.forEach((dot, i) => {
+    if (i === current) {
+      dot.className = dot.className.replace("w-2 h-2 bg-slate-600", "");
+      dot.classList.add("w-6", "h-2", "bg-blue-500");
+      dot.classList.remove("w-2", "bg-slate-600");
+      dot.setAttribute("aria-selected", "true");
+    } else {
+      dot.classList.remove("w-6", "bg-blue-500");
+      dot.classList.add("w-2", "h-2", "bg-slate-600");
+      dot.setAttribute("aria-selected", "false");
+    }
+  });
+}
+
+// ── Teclado ───────────────────────────────────────────────────────────────
+document.addEventListener("keydown", (e) => {
+  if (backdrop.classList.contains("pointer-events-none")) return;
+
+  switch (e.key) {
+    case "Escape":    close();             break;
+    case "ArrowLeft": goTo(current - 1);   break;
+    case "ArrowRight":goTo(current + 1);   break;
+  }
+});
+
+// ── Touch / Swipe ─────────────────────────────────────────────────────────
+let touchStartX = 0;
+
+backdrop.addEventListener("touchstart", (e) => {
+  touchStartX = e.touches[0].clientX;
+}, { passive: true });
+
+backdrop.addEventListener("touchend", (e) => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) < 50) return;          // umbral mínimo de swipe
+  goTo(diff > 0 ? current + 1 : current - 1);
+}, { passive: true });
+
+// ── Precarga de imagen vecina (mejora de UX) ──────────────────────────────
+// Cuando se abre una imagen, precarga la siguiente en segundo plano.
+function prefetchNext() {
+  const nextSrc = images[(current + 1) % images.length];
+  if (!nextSrc || nextSrc === images[current]) return;
+  const preloader = new Image();
+  preloader.src = nextSrc;
+}
+
+window.addEventListener("cinehub:lightbox:open", prefetchNext);
+btnNext.addEventListener("click", prefetchNext);
+</script>

@@ -1,0 +1,135 @@
+---
+// src/components/ProjectCard.astro
+// ─────────────────────────────────────────────────────────────────────────────
+// Tarjeta de proyecto con soporte para el sistema de visual discriminado.
+// El componente ProjectVisual se encarga de toda la lógica icono/galería;
+// ProjectCard solo gestiona el contenido textual y los botones de CTA.
+// ─────────────────────────────────────────────────────────────────────────────
+import type { Project }  from "../types/projects";
+import ProjectVisual     from "./ProjectVisual.astro";
+
+export interface Props {
+  project: Project;
+  /** Índice en el grid — se usa para el animation-delay escalonado */
+  index?:  number;
+}
+
+const { project, index = 0 } = Astro.props;
+const { title, subtitle, description, techStack, liveUrl, githubUrl, visual } = project;
+
+// Slug único para el lightbox: convierte título a kebab-case
+const projectId = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+// ¿La tarjeta tiene cabecera visual de imagen?
+const hasImageHeader = visual.visualType === "gallery";
+---
+
+<article
+  class="
+    group flex flex-col rounded-2xl overflow-hidden
+    bg-slate-900 border border-slate-700/50
+    hover:border-blue-500/30
+    transition-all duration-500 ease-out
+    hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-900/20
+    animate-on-scroll
+  "
+  style={`animation-delay: ${index * 0.1}s`}
+>
+
+  <!-- ── CABECERA VISUAL (icono o galería) ─────────────────────────────── -->
+  <!-- Si es galería, ProjectVisual ocupa todo el ancho sin padding.        -->
+  <!-- Si es icono, lo envolvemos en el mismo bloque con padding.           -->
+  {hasImageHeader ? (
+    <ProjectVisual visual={visual} projectId={projectId} />
+  ) : (
+    <div class="p-5 pb-0">
+      <ProjectVisual visual={visual} projectId={projectId} />
+    </div>
+  )}
+
+  <!-- ── CONTENIDO ─────────────────────────────────────────────────────── -->
+  <div class="flex flex-col flex-1 p-5 gap-3">
+
+    <!-- Tech stack -->
+    <div class="flex flex-wrap gap-1.5">
+      {techStack.map((tech) => (
+        <span class="
+          px-2 py-0.5 rounded-md
+          bg-slate-800 border border-slate-700/60
+          text-slate-400 text-[10px] font-medium uppercase tracking-wider
+        ">
+          {tech}
+        </span>
+      ))}
+    </div>
+
+    <!-- Subtítulo + Título -->
+    <div>
+      <p class="text-slate-500 text-xs uppercase tracking-widest font-medium mb-1">
+        {subtitle}
+      </p>
+      <h3 class="
+        font-semibold text-lg leading-snug
+        text-white group-hover:text-blue-300
+        transition-colors duration-300
+      ">
+        {title}
+      </h3>
+    </div>
+
+    <!-- Descripción -->
+    <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 flex-1">
+      {description}
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex items-center gap-2 mt-auto pt-1">
+      {liveUrl && (
+        <a
+          href={liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="
+            flex-1 flex items-center justify-center gap-2
+            py-2.5 px-4 rounded-xl
+            bg-blue-600/10 hover:bg-blue-600
+            border border-blue-500/30 hover:border-blue-500
+            text-blue-400 hover:text-white
+            text-sm font-semibold
+            transition-all duration-250
+            group/live
+          "
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform group-hover/live:translate-x-0.5 group-hover/live:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+          View Live
+        </a>
+      )}
+
+      {githubUrl && (
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="
+            flex items-center justify-center gap-2
+            py-2.5 px-4 rounded-xl
+            bg-slate-800/60 hover:bg-slate-700
+            border border-slate-600/50 hover:border-slate-500
+            text-slate-400 hover:text-white
+            text-sm font-semibold
+            transition-all duration-250
+          "
+          aria-label={`Ver código de ${title} en GitHub`}
+        >
+          <!-- GitHub SVG (sin dependencia de FA) -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/>
+          </svg>
+          GitHub
+        </a>
+      )}
+    </div>
+  </div>
+</article>
