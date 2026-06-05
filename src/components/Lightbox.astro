@@ -1,23 +1,8 @@
 ---
 // src/components/Lightbox.astro
-// ─────────────────────────────────────────────────────────────────────────────
-// Modal/Lightbox global para la galería de proyectos.
-// Se monta UNA SOLA VEZ en el Layout; ProjectVisual lo activa via CustomEvent.
-//
-// Cierre:
-//   • Botón ✕
-//   • Tecla Escape
-//   • Clic en el fondo oscuro
-//
-// Navegación:
-//   • Flechas ← → en teclado
-//   • Botones prev/next en pantalla
-//   • Swipe táctil (touch)
-//   • Indicadores de puntos
-// ─────────────────────────────────────────────────────────────────────────────
+
 ---
 
-<!-- El lightbox vive fuera del flujo del DOM — position:fixed -->
 <div
   id="lb-backdrop"
   role="dialog"
@@ -32,10 +17,8 @@
   "
 >
 
-  <!-- Fondo clickeable para cerrar -->
   <div id="lb-close-area" class="absolute inset-0" aria-hidden="true"></div>
 
-  <!-- Contenedor de la imagen ────────────────────────────────────────────── -->
   <div
     id="lb-container"
     class="
@@ -75,7 +58,6 @@
       </button>
     </div>
 
-    <!-- Fila principal: flecha ← imagen flecha → -->
     <div class="flex items-center gap-3 w-full">
 
       <!-- Flecha anterior -->
@@ -111,7 +93,6 @@
           shadow-2xl shadow-black/60
         "
       >
-        <!-- Skeleton loader mientras carga -->
         <div
           id="lb-skeleton"
           class="w-full aspect-video bg-slate-800 animate-pulse rounded-2xl"
@@ -154,14 +135,12 @@
       </button>
     </div>
 
-    <!-- Alt text de la imagen actual -->
     <p
       id="lb-alt"
       class="mt-3 text-slate-400 text-sm text-center line-clamp-1 px-14"
       aria-live="polite"
     ></p>
 
-    <!-- Indicadores de puntos (dots) -->
     <div
       id="lb-dots"
       class="flex items-center justify-center gap-2 mt-4"
@@ -335,8 +314,6 @@ backdrop.addEventListener("touchend", (e) => {
   goTo(diff > 0 ? current + 1 : current - 1);
 }, { passive: true });
 
-// ── Precarga de imagen vecina (mejora de UX) ──────────────────────────────
-// Cuando se abre una imagen, precarga la siguiente en segundo plano.
 function prefetchNext() {
   const nextSrc = images[(current + 1) % images.length];
   if (!nextSrc || nextSrc === images[current]) return;

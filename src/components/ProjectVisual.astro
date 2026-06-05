@@ -1,14 +1,6 @@
 ---
 // src/components/ProjectVisual.astro
-// ─────────────────────────────────────────────────────────────────────────────
-// Componente de cabecera visual de una ProjectCard.
-// Renderiza el modo correcto según `visual.visualType` sin condicionales
-// dispersos: toda la lógica de presentación vive aquí.
-//
-// Props de entrada:
-//   visual      → ProjectVisual  (discriminated union del tipo)
-//   projectId   → string         (id único para el lightbox; ej. slug del título)
-// ─────────────────────────────────────────────────────────────────────────────
+
 import type { ProjectVisual } from "../types/projects";
 import { isGalleryVisual }    from "../types/projects";
 
@@ -19,26 +11,20 @@ export interface Props {
 
 const { visual, projectId } = Astro.props;
 
-// ── Helpers para el modo galería ─────────────────────────────────────────────
 const isGallery    = isGalleryVisual(visual);
 const images       = isGallery ? visual.images       : [];
 const altRaw       = isGallery ? (visual.alt ?? "")  : "";
 const hasMultiple  = images.length > 1;
 
-/** Devuelve el alt text por índice */
 function getAlt(i: number): string {
   if (Array.isArray(altRaw)) return altRaw[i] ?? `Captura ${i + 1}`;
   return altRaw || `Captura ${i + 1}`;
 }
 
-// ── Diseño del contenedor ─────────────────────────────────────────────────────
-// Las mismas dimensiones del icono original: h-14 w-14 → aquí usamos h-44
-// (aspect-video) para tener superficie real de imagen.
 ---
 
 {isGallery ? (
 
-  <!-- ══ MODO GALERÍA ══════════════════════════════════════════════════════ -->
   <div
     class="relative w-full overflow-hidden rounded-t-2xl group/gallery"
     data-gallery-id={projectId}
@@ -66,15 +52,12 @@ function getAlt(i: number): string {
       />
     </div>
 
-    <!-- Overlay con indicadores ─────────────────────────────────────────── -->
     <div
       class="
         absolute inset-0 flex flex-col items-end justify-end p-3
         pointer-events-none
       "
     >
-
-      <!-- Botón de expandir (ícono lupa) — aparece al hover -->
       <div
         class="
           pointer-events-auto
@@ -97,7 +80,6 @@ function getAlt(i: number): string {
 
     </div>
 
-    <!-- Thumbnail strip (solo si hay más de una imagen) ─────────────────── -->
     {hasMultiple && (
       <div class="absolute bottom-0 left-0 right-0 flex gap-1 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
         {images.slice(0, 6).map((src, i) => (
@@ -136,7 +118,6 @@ function getAlt(i: number): string {
 
 ) : (
 
-  <!-- ══ MODO ICONO (original, sin cambios) ════════════════════════════════ -->
   <div class="flex items-center justify-center h-14 w-14 rounded-xl bg-slate-800/60 border border-slate-700/50 text-2xl select-none" aria-hidden="true">
     {visual.icon}
   </div>
@@ -144,11 +125,6 @@ function getAlt(i: number): string {
 )}
 
 <script>
-// ─────────────────────────────────────────────────────────────────────────────
-// Delegación de eventos para abrir el lightbox global.
-// Este script se ejecuta una sola vez aunque haya múltiples ProjectVisual
-// en la página (Astro deduplica scripts idénticos en el bundle).
-// ─────────────────────────────────────────────────────────────────────────────
 document.addEventListener("click", (e) => {
   const trigger = (e.target as Element).closest("[data-open-lightbox]");
   if (!trigger) return;
@@ -160,7 +136,6 @@ document.addEventListener("click", (e) => {
   const alts   = JSON.parse(gallery.dataset.alts   ?? "[]") as string[];
   const index  = parseInt((trigger as HTMLElement).dataset.index ?? "0", 10);
 
-  // Dispara evento global que el Lightbox escucha
   window.dispatchEvent(new CustomEvent("cinehub:lightbox:open", {
     detail: { images, alts, index },
   }));

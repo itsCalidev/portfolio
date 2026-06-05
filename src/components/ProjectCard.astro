@@ -1,26 +1,19 @@
 ---
 // src/components/ProjectCard.astro
-// ─────────────────────────────────────────────────────────────────────────────
-// Tarjeta de proyecto con soporte para el sistema de visual discriminado.
-// El componente ProjectVisual se encarga de toda la lógica icono/galería;
-// ProjectCard solo gestiona el contenido textual y los botones de CTA.
-// ─────────────────────────────────────────────────────────────────────────────
+
 import type { Project }  from "../types/projects";
 import ProjectVisual     from "./ProjectVisual.astro";
 
 export interface Props {
   project: Project;
-  /** Índice en el grid — se usa para el animation-delay escalonado */
   index?:  number;
 }
 
 const { project, index = 0 } = Astro.props;
 const { title, subtitle, description, techStack, liveUrl, githubUrl, visual } = project;
 
-// Slug único para el lightbox: convierte título a kebab-case
 const projectId = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-// ¿La tarjeta tiene cabecera visual de imagen?
 const hasImageHeader = visual.visualType === "gallery";
 ---
 
@@ -36,9 +29,8 @@ const hasImageHeader = visual.visualType === "gallery";
   style={`animation-delay: ${index * 0.1}s`}
 >
 
-  <!-- ── CABECERA VISUAL (icono o galería) ─────────────────────────────── -->
-  <!-- Si es galería, ProjectVisual ocupa todo el ancho sin padding.        -->
-  <!-- Si es icono, lo envolvemos en el mismo bloque con padding.           -->
+  <!-- ── CABECERA VISUAL ─────────────────────────────── -->
+
   {hasImageHeader ? (
     <ProjectVisual visual={visual} projectId={projectId} />
   ) : (
