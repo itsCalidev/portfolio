@@ -24,9 +24,22 @@ const projects: Project[] = [
     type:        'github',
     url:         'https://github.com/itsCalidev/nauticstock',
     gradient:    'from-indigo-900/60 via-blue-900/40 to-slate-900/60',
-    icon:        '⚓',
-    // visualType no declarado → se trata como 'icon' automáticamente
-  },
+visualType:  'gallery',
+    images: [
+      '/projects/nauticstock/login.jpeg',
+      '/projects/nauticstock/dashboard.jpeg',
+      '/projects/nauticstock/productos.jpeg',
+      '/projects/nauticstock/ordenes.jpeg',
+      '/projects/nauticstock/proveedores.jpeg',
+    ],
+    alts: [
+      'NauticStock — Login page',
+      'NauticStock — Dashbpboard with charts and log widgets',
+      'NauticStock — Products catalog with search and pagination',
+      'NauticStock — Orders management page with filters and table',
+      'NauticStock — Providers management page with search and table',
+    ],
+    },
   {
     title:       'Domind Main Platform',
     subtitle:    'Climate Diagnosis',
